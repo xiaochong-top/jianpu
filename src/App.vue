@@ -43,7 +43,7 @@ export default {
             {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_2',  height:0,  length:8,Ligature:'Ligature_3'},
             {  note:'note_1',  height:0,  length:4,},
-            {  note:'note_8',  height:0,  length:4,}
+            {  note:'note_9',  height:0,  length:4,}
           ],
         [
           {  note:'note_3',  height:0,  length:8.5},
@@ -51,7 +51,7 @@ export default {
           {  note:'note_1',  height:0,  length:8},
           {  note:'note_6',  height:-1,  length:8},
           {  note:'note_5',  height:-1,  length:4},
-          {  note:'note_8',  height:0,  length:4,}
+          {  note:'note_9',  height:0,  length:4,}
         ],
         [
           {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
@@ -70,7 +70,7 @@ export default {
           {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_2'},
           {  note:'note_1',  height:0,  length:16,Ligature:'Ligature_3'},
           {  note:'note_2',  height:0,  length:4,Ligature:'Ligature_2'},
-          {  note:'note_8',  height:0,  length:4},
+          {  note:'note_9',  height:0,  length:4},
         ]
       ]
     }
@@ -91,9 +91,9 @@ export default {
           let str=JSON.stringify(arr)
           item_x.id==str
           // 在每一行头部加上光标位
-          if(item_x.length==0 || item_x[0].note!='note_9'){
+          if(item_x.length==0 || item_x[0].note!='note_100'){
             console.log('在每一行头部加上光标位')
-            item_x.unshift({note:'note_9',length:0})
+            item_x.unshift({note:'note_100',length:0})
           }
           return item_x
         })
@@ -135,7 +135,7 @@ export default {
     keydown1(e,x,y){
       // 数字键0-8
       if(/[0-8]/.test(e.key)){
-        this.music[x].splice(y+1,0,{  number:parseInt(e.key),height:0,length:4})
+        this.music[x].splice(y+1,0,{  note:`note_${parseInt(e.key)}`,height:0,length:4})
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
       }
       // 删除键

@@ -1,5 +1,5 @@
 <template>
-      <div v-if="Tone.note=='note_9'" class="note_Cursor">
+      <div v-if="Tone.note=='note_100'" class="note_Cursor">
         <div v-if="showCursor==true" class="layout_right_Cursor"/>
       </div>
       <div v-else class="note">
@@ -14,7 +14,8 @@
 <script>
 export default {
   name: 'ShowNote',
-  // number:0-8 哆、唻、咪、发、嗖、拉、西，8是延长线，9是纯光标(用于行首)
+  // note:note_0-8 哆、唻、咪、发、嗖、拉、西，
+  // 8延长一半(延长点)，9延长线，10小结分界线，100换行
   // height:-2,-1,0,1,2 高低音
   // length: 16.5,16, 8.5, 8, 4.5, 4 长短音
   // lianyinxian:0,1,2,3 连音符
@@ -46,10 +47,11 @@ export default {
       deep:true,
       immediate: true,
       handler(){
+        this.noteSvgArr=[]
         // 音符
         this.noteSvgArr.push(this.Tone.note)
         // 连音线
-          this.noteSvgArr.push(this.Tone.Ligature)
+        this.noteSvgArr.push(this.Tone.Ligature)
       }
     }
   },
@@ -89,6 +91,7 @@ export default {
 .note_Cursor{
   outline: none;
   display: inline-block;
+  position: relative;
   height:8vw ;
   width:1px;
 }
@@ -110,7 +113,7 @@ export default {
   width: 100%;
   height:100%;
 }
-/*音符*/
+/*音符,8是延长音*/
 .note_0{background:url("@/assets/notesvg/note_0.svg");}
 .note_1{background:url("@/assets/notesvg/note_1.svg");}
 .note_2{background:url("@/assets/notesvg/note_2.svg");}
@@ -119,7 +122,9 @@ export default {
 .note_5{background:url("@/assets/notesvg/note_5.svg");}
 .note_6{background:url("@/assets/notesvg/note_6.svg");}
 .note_7{background:url("@/assets/notesvg/note_7.svg");}
-.note_8{background:url("@/assets/notesvg/note_0.svg");}
+.note_8{background:url("@/assets/notesvg/note_8.svg");}
+.note_9{background:url("@/assets/notesvg/note_9.svg");}
+.note_10{background:url("@/assets/notesvg/note_10.svg");}
 
 /*低音标记*/
 .bass_1{background:url("@/assets/notesvg/bass_1.svg");}
@@ -138,9 +143,6 @@ export default {
 /*高音标记*/
 .treble_1{background:url("@/assets/notesvg/Treble_1.svg");}
 .treble_2{background:url("@/assets/notesvg/Treble_2.svg");}
-/*小节分割线*/
-.boundary{background: url("@/assets/notesvg/boundary.svg");}
-/*延长一半*/
-.half-step{background: url("@/assets/notesvg/half-step.svg");}
+
 
 </style>
