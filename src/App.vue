@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <leftbox/>
+    <!--<leftbox/>-->
     <div id="page" class="page" @click="insert">
       <div id="title" class="title">{{title}}</div>
       <div id="hied" class="hied"/>
@@ -24,7 +24,6 @@
 <script>
 import rightbox from  './components/rightbox'
 import note from './components/note'
-import  leftbox from './components/leftbox'
 import {reactive} from "vue";
 
 export default {
@@ -32,47 +31,46 @@ export default {
   components: {
     rightbox,
     note,
-    leftbox
+    // leftbox
   },
   data(){
     return{
       title:'',
       music_source:[
           [
-
-            {  number:6,  height:0,  length:8.5,lianyinxian:1},
-            {  number:5,  height:0,  length:16,lianyinxian:3},
-            {  number:3,  height:0,  length:8,lianyinxian:1},
-            {  number:2,  height:0,  length:8,lianyinxian:3},
-            {  number:1,  height:0,  length:4,},
-            {  number:8,  height:0,  length:4,}
+            {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
+            {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
+            {  note:'note_2',  height:0,  length:8,Ligature:'Ligature_3'},
+            {  note:'note_1',  height:0,  length:4,},
+            {  note:'note_8',  height:0,  length:4,}
           ],
         [
-          {  number:3,  height:0,  length:8.5},
-          {  number:2,  height:0,  length:16},
-          {  number:1,  height:0,  length:8},
-          {  number:6,  height:-1,  length:8},
-          {  number:5,  height:-1,  length:4},
-          {  number:8,  height:0,  length:4,}
+          {  note:'note_3',  height:0,  length:8.5},
+          {  note:'note_2',  height:0,  length:16},
+          {  note:'note_1',  height:0,  length:8},
+          {  note:'note_6',  height:-1,  length:8},
+          {  note:'note_5',  height:-1,  length:4},
+          {  note:'note_8',  height:0,  length:4,}
         ],
         [
-          {  number:5,  height:-1,  length:8.5,lianyinxian:1},
-          {  number:6,  height:-1,  length:16,lianyinxian:3},
-          {  number:5,  height:-1,  length:8.5,lianyinxian:1},
-          {  number:6,  height:-1,  length:16,lianyinxian:3},
-          {  number:1,  height:0,  length:8.5,lianyinxian:1},
-          {  number:2,  height:0,  length:16,lianyinxian:3},
-          {  number:3,  height:0,  length:8,lianyinxian:1},
-          {  number:5,  height:0,  length:8,lianyinxian:3},
+          {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_1',  height:0,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:0,  length:8,Ligature:'Ligature_3'},
         ],
         [
-          {  number:6,  height:0,  length:8.5,lianyinxian:1},
-          {  number:5,  height:0,  length:16,lianyinxian:3},
-          {  number:3,  height:0,  length:8,lianyinxian:1},
-          {  number:2,  height:0,  length:16,lianyinxian:2},
-          {  number:1,  height:0,  length:16,lianyinxian:3},
-          {  number:2,  height:0,  length:4,lianyinxian:2},
-          {  number:8,  height:0,  length:4},
+          {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
+          {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_2'},
+          {  note:'note_1',  height:0,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_2',  height:0,  length:4,Ligature:'Ligature_2'},
+          {  note:'note_8',  height:0,  length:4},
         ]
       ]
     }
@@ -93,9 +91,9 @@ export default {
           let str=JSON.stringify(arr)
           item_x.id==str
           // 在每一行头部加上光标位
-          if(item_x.length==0 || item_x[0].number!=9){
+          if(item_x.length==0 || item_x[0].note!='note_9'){
             console.log('在每一行头部加上光标位')
-            item_x.unshift({number:9,length:0})
+            item_x.unshift({note:'note_9',length:0})
           }
           return item_x
         })
@@ -124,6 +122,7 @@ export default {
     },
     // 修改光标位置
     moveCursor(x,y){
+      console.log(x,y)
       this.music=this.music.map(item_x=>{
         return item_x.map(item_y=>{
           item_y.showCursor=false

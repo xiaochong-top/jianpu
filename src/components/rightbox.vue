@@ -13,7 +13,7 @@
 
 <style>
 #rightBox{
-  width: 25%;
+  width: 40%;
   height: 600px;
   padding:3vw;
   top:1vw;
