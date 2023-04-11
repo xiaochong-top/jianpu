@@ -12,8 +12,10 @@
                 :ref="'note'+index_x+'_'+index_y"
                 tabindex="-1"
                 @focus.stop="moveCursor(index_x,index_y)"
+                @click.stop.prevent="clickLift($event,index_x,index_y)"
                 @keydown.stop="keydown1($event,index_x,index_y)"
           />
+          <!--@mousedown.stop.prevent="clickLift($event,index_x,index_y)"-->
         </div>
       </div>
     </div>
@@ -35,15 +37,42 @@ export default {
   },
   data(){
     return{
+      // 题目
       title:'',
+      // 简谱数据
       music_source:[
           [
             {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
             {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
             {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_2',  height:0,  length:8,Ligature:'Ligature_3'},
-            {  note:'note_1',  height:0,  length:4,},
-            {  note:'note_9',  height:0,  length:4,}
+            {  note:'note_1',  height:0,  length:4},
+            {  note:'note_9',  height:0,  length:4},
+            {  note:'note_10'},
+            {  note:'note_3',  height:0,  length:8.5},
+            {  note:'note_2',  height:0,  length:16},
+            {  note:'note_1',  height:0,  length:8},
+            {  note:'note_6',  height:-1,  length:8},
+            {  note:'note_5',  height:-1,  length:4},
+            {  note:'note_9',  height:0,  length:4,},
+            {  note:'note_10'},
+            {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
+            {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
+            {  note:'note_1',  height:0,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_3'},
+            {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
+            {  note:'note_5',  height:0,  length:8,Ligature:'Ligature_3'},
+            {  note:'note_10'},
+            {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
+            {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
+            {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_2'},
+            {  note:'note_1',  height:0,  length:16,Ligature:'Ligature_3'},
+            {  note:'note_2',  height:0,  length:4,Ligature:'Ligature_2'},
+            {  note:'note_9',  height:0,  length:4},
+            {  note:'note_10'}
           ],
         [
           {  note:'note_3',  height:0,  length:8.5},
@@ -72,27 +101,24 @@ export default {
           {  note:'note_2',  height:0,  length:4,Ligature:'Ligature_2'},
           {  note:'note_9',  height:0,  length:4},
         ]
-      ]
+      ],
+      // 标识当前获取焦点的音符坐标
+      focus:{x:null,y:null}
     }
   },
   computed:{
     music:{
       get(){
         let arr_x=this.music_source.map((item_x,index_x)=>{
-          let arr=item_x
-          arr=arr.map((item_y,index_y)=>{
-            let obj=item_y
-            obj.x=index_x
-            obj.y=index_y
-            let str=JSON.stringify(obj)
+          let arr=item_x.map((item_y,index_y)=>{
+            let str=JSON.stringify({...item_y,x:index_x,y:index_y})
             item_y.id=str
             return item_y
           })
           let str=JSON.stringify(arr)
           item_x.id==str
-          // 在每一行头部加上光标位
+          // 在每一行头部加上行首的光标容器对象
           if(item_x.length==0 || item_x[0].note!='note_100'){
-            console.log('在每一行头部加上光标位')
             item_x.unshift({note:'note_100',length:0})
           }
           return item_x
@@ -120,25 +146,49 @@ export default {
     // 点击打印按钮触发
     insert(){
     },
-    // 修改光标位置
+    // 鼠标左键按下
+    clickLift(e,x,y){
+      let maxlift=parseInt(document.documentElement.clientWidth/304.7)
+      if (y!=0 && e.offsetX<maxlift){ this.moveCursor(x,y-1) }
+      else { this.moveCursor(x,y) }
+
+    },
+    // 修改光标位置(获取焦点的元素坐标)
     moveCursor(x,y){
-      console.log(x,y)
+      // 遍历清空上一个获取焦点的音符光标
       this.music=this.music.map(item_x=>{
         return item_x.map(item_y=>{
           item_y.showCursor=false
           return item_y
         })
       })
+      // 配置新音符
+      this.focus={x,y}
       this.music[x][y].showCursor=true
     },
     // input 事件无法阻止默认行为，用键盘事件模拟
     keydown1(e,x,y){
-      // 数字键0-8
-      if(/[0-8]/.test(e.key)){
-        this.music[x].splice(y+1,0,{  note:`note_${parseInt(e.key)}`,height:0,length:4})
+      // 数字键0-7
+      if(/[0-7]/.test(e.key)){
+        let timeObj={note:`note_${parseInt(e.key)}`,height:0,length:4}
+        let Ligature=''
+        if(y!=0){ Ligature=this.music[x][y].Ligature }
+        else if(x!=0){ Ligature=this.music[x-1][this.music[x-1].length-1].Ligature }
+        if(Ligature=='Ligature_1'||Ligature=='Ligature_2'){ timeObj.Ligature='Ligature_2' }
+        this.music[x].splice(y+1,0,timeObj)
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
       }
-      // 删除键
+      // 延长音
+      if(e.key=='.'){if(y!=0){this.music[x][y].delay=true}}
+      // 重复音
+      if(e.key=='-'){this.music[x][y].note='note_9'}
+      // 小结分界线
+      if(e.key=='|'){this.music[x][y].note='note_10'}
+      // 光标移动到行首
+      if(e.key=='Home'){this.$refs['note'+x+'_'+(0)][0].$el.focus()}
+      // 光标移动到行尾
+      if(e.key=='End'){this.$refs['note'+x+'_'+(this.music[x].length-1)][0].$el.focus()}
+      // 删除键(回退)
       if(e.key=='Backspace'){
         if(y!=0){
           this.music[x].splice(y,1)
@@ -151,6 +201,20 @@ export default {
           this.music[x-1].push(...timeArr)
           this.music.splice(x,1)
           this.$nextTick(()=>{this.$refs['note'+(x-1)+'_'+time_y][0].$el.focus()})
+        }
+      }
+      // 删除键
+      if(e.key=='Delete'){
+        const length_x=this.music.length
+        const length_y=this.music[x].length
+        if(y+1!=length_y){
+          this.music[x].splice(y+1,1)
+        }else if(x+1!=length_x){
+          const timeArr=[]
+          timeArr.push(...this.music[x+1])
+          timeArr.shift()
+          this.music[x].push(...timeArr)
+          this.music.splice(x+1,1)
         }
       }
       // 回车
@@ -202,17 +266,15 @@ export default {
       }
       // b
       if(e.key=='b' || e.key=='B'){
-        console.log('您按下了b')
-        if(this.music[x][y].lianyinxian){
-          this.music[x][y].lianyinxian=1
+        if(this.music[x][y].Ligature){
+          this.music[x][y].Ligature='Ligature_1'
         }else{
-          Reflect.set(this.music[x][y],"lianyinxian",1)
+          Reflect.set(this.music[x][y],"Ligature",'Ligature_1')
         }
-        console.log(this.music[x][y])
       }
       // e
       if(e.key=='e' || e.key=='E'){
-        this.music[x][y].lianyinxian=3
+        this.music[x][y].Ligature='Ligature_3'
       }
 
       if(e.key=='u' || e.key=='U'){

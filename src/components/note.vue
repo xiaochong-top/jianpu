@@ -50,8 +50,12 @@ export default {
         this.noteSvgArr=[]
         // 音符
         this.noteSvgArr.push(this.Tone.note)
+        // 延长音
+        if(this.Tone.delay){this.noteSvgArr.push('note_8')}
         // 连音线
         this.noteSvgArr.push(this.Tone.Ligature)
+        // 下划线
+
       }
     }
   },
@@ -84,15 +88,15 @@ export default {
   outline: none;
   display: inline-block;
   position: relative;
-  height:8VW ;
-  width:4VW;
+  height:3VW ;
+  width:1.5VW;
 }
 /*换行光标容器*/
 .note_Cursor{
   outline: none;
   display: inline-block;
   position: relative;
-  height:8vw ;
+  height:3vw ;
   width:1px;
 }
 /*光标，右浮动顶层*/
