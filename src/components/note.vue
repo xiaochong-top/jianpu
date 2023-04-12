@@ -55,6 +55,8 @@ export default {
         // 连音线
         this.noteSvgArr.push(this.Tone.Ligature)
         // 下划线
+        if(this.Tone.length>=8){this.noteSvgArr.push('short_1')}
+        if(this.Tone.length>=16){this.noteSvgArr.push('short_2')}
 
       }
     }

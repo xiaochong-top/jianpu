@@ -1,9 +1,11 @@
 <template>
   <div id="app">
-    <!--<leftbox/>-->
     <div id="page" class="page" @click="insert">
+      <!--标题-->
       <div id="title" class="title">{{title}}</div>
+      <!--作者标记-->
       <div id="hied" class="hied"/>
+      <!--正文-->
       <div class="note-cursor" id="input">
         <div v-for="(noteList,index_x) in music" :key="index_x">
           <note v-for="(item,index_y) in noteList"
@@ -32,7 +34,6 @@ export default {
   components: {
     rightbox,
     note,
-    // leftbox
   },
   data(){
     return{
@@ -41,30 +42,30 @@ export default {
       // 简谱数据
       music_source:[
           [
-            {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_6',  height:0,  length:8,Ligature:'Ligature_1',delay:true},
             {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
             {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_2',  height:0,  length:8,Ligature:'Ligature_3'},
             {  note:'note_1',  height:0,  length:4},
             {  note:'note_9',  height:0,  length:4},
             {  note:'note_10'},
-            {  note:'note_3',  height:0,  length:8.5},
+            {  note:'note_3',  height:0,  length:8,delay:true},
             {  note:'note_2',  height:0,  length:16},
             {  note:'note_1',  height:0,  length:8},
             {  note:'note_6',  height:-1,  length:8},
             {  note:'note_5',  height:-1,  length:4},
             {  note:'note_9',  height:0,  length:4,},
             {  note:'note_10'},
-            {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_5',  height:-1,  length:8,Ligature:'Ligature_1'},
             {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
-            {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_5',  height:-1,  length:8,Ligature:'Ligature_1'},
             {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
-            {  note:'note_1',  height:0,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_1',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_3'},
             {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_5',  height:0,  length:8,Ligature:'Ligature_3'},
             {  note:'note_10'},
-            {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
+            {  note:'note_6',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
             {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
             {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_2'},
@@ -74,7 +75,7 @@ export default {
             {  note:'note_10'}
           ],
         [
-          {  note:'note_3',  height:0,  length:8.5},
+          {  note:'note_3',  height:0,  length:8},
           {  note:'note_2',  height:0,  length:16},
           {  note:'note_1',  height:0,  length:8},
           {  note:'note_6',  height:-1,  length:8},
@@ -82,17 +83,17 @@ export default {
           {  note:'note_9',  height:0,  length:4,}
         ],
         [
-          {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:-1,  length:8,Ligature:'Ligature_1'},
           {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
-          {  note:'note_5',  height:-1,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:-1,  length:8,Ligature:'Ligature_1'},
           {  note:'note_6',  height:-1,  length:16,Ligature:'Ligature_3'},
-          {  note:'note_1',  height:0,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_1',  height:0,  length:8,Ligature:'Ligature_1'},
           {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_3'},
           {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
           {  note:'note_5',  height:0,  length:8,Ligature:'Ligature_3'},
         ],
         [
-          {  note:'note_6',  height:0,  length:8.5,Ligature:'Ligature_1'},
+          {  note:'note_6',  height:0,  length:8,Ligature:'Ligature_1'},
           {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
           {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
           {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_2'},
@@ -179,14 +180,19 @@ export default {
     },
     // input 事件无法阻止默认行为，用键盘事件模拟
     keydown1(e,x,y){
+
+      // console.log(e)
+
+      ////////////////
+      // 加入新组件的操作
+      ////////////////
+
       // 数字键0-7
       if(/[0-7]/.test(e.key)){
         let timeObj={note:`note_${parseInt(e.key)}`,height:0,length:4}
         this.music[x].splice(y+1,0,timeObj)
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
       }
-      // 延长音
-      if(e.key=='.'){if(y!=0){this.music[x][y].delay=true}}
       // 重复音
       if(e.key=='-'){
         let timeObj={note:`note_9`,height:0,length:4}
@@ -195,48 +201,17 @@ export default {
       }
       // 小结分界线
       if(e.key=='|'){this.music[x][y].note='note_10'}
-      // 光标移动到行首
-      if(e.key=='Home'){this.$refs['note'+x+'_'+(0)][0].$el.focus()}
-      // 光标移动到行尾
-      if(e.key=='End'){this.$refs['note'+x+'_'+(this.music[x].length-1)][0].$el.focus()}
-      // 删除键(回退)
-      if(e.key=='Backspace'){
-        if(y!=0){
-          this.music[x].splice(y,1)
-          this.$nextTick(()=>{this.$refs['note'+x+'_'+(y-1)][0].$el.focus()})
-        }else if(x!=0){
-          const time_y=this.music[x-1].length-1
-          const timeArr=[]
-          timeArr.push(...this.music[x])
-          timeArr.shift()
-          this.music[x-1].push(...timeArr)
-          this.music.splice(x,1)
-          this.$nextTick(()=>{this.$refs['note'+(x-1)+'_'+time_y][0].$el.focus()})
-        }
+
+      // 延长音点
+      if(e.key=='.'){if(y!=0){this.music[x][y].delay=!this.music[x][y].delay}}
+      // 下划线
+      if(e.key=='_'){
+        if(y!=0){this.music[x][y].length=this.music[x][y].length==16?4:this.music[x][y].length*2}
       }
-      // 删除键
-      if(e.key=='Delete'){
-        const length_x=this.music.length
-        const length_y=this.music[x].length
-        if(y+1!=length_y){
-          this.music[x].splice(y+1,1)
-        }else if(x+1!=length_x){
-          const timeArr=[]
-          timeArr.push(...this.music[x+1])
-          timeArr.shift()
-          this.music[x].push(...timeArr)
-          this.music.splice(x+1,1)
-        }
-      }
-      // 回车
-      if(e.key=='Enter'){
-        const timeArr=reactive([])
-        this.music.splice(x+1,0,timeArr)
-        this.music[x+1]=this.music[x].filter((item,index)=>index>y)
-        this.music[x]=this.music[x].filter((item,index)=>index<=y)
-        this.moveCursor(x+1,0)
-        this.$nextTick(()=>{this.$refs['note'+(x+1)+'_'+0][0].$el.focus()})
-      }
+
+      ////////////////
+      // 移动光标的操作
+      ////////////////
       // 上
       if(e.key=='ArrowUp'){
         if(x!=0){
@@ -275,6 +250,51 @@ export default {
           this.$nextTick(()=>{this.$refs['note'+(x+1)+'_'+0][0].$el.focus()})
         }
       }
+      // 光标移动到行首
+      if(e.key=='Home'){this.$refs['note'+x+'_'+(0)][0].$el.focus()}
+      // 光标移动到行尾
+      if(e.key=='End'){this.$refs['note'+x+'_'+(this.music[x].length-1)][0].$el.focus()}
+
+
+      // 删除键(回退)
+      if(e.key=='Backspace'){
+        if(y!=0){
+          this.music[x].splice(y,1)
+          this.$nextTick(()=>{this.$refs['note'+x+'_'+(y-1)][0].$el.focus()})
+        }else if(x!=0){
+          const time_y=this.music[x-1].length-1
+          const timeArr=[]
+          timeArr.push(...this.music[x])
+          timeArr.shift()
+          this.music[x-1].push(...timeArr)
+          this.music.splice(x,1)
+          this.$nextTick(()=>{this.$refs['note'+(x-1)+'_'+time_y][0].$el.focus()})
+        }
+      }
+      // 删除键
+      if(e.key=='Delete'){
+        const length_x=this.music.length
+        const length_y=this.music[x].length
+        if(y+1!=length_y){
+          this.music[x].splice(y+1,1)
+        }else if(x+1!=length_x){
+          const timeArr=[]
+          timeArr.push(...this.music[x+1])
+          timeArr.shift()
+          this.music[x].push(...timeArr)
+          this.music.splice(x+1,1)
+        }
+      }
+      // 回车
+      if(e.key=='Enter'){
+        const timeArr=reactive([])
+        this.music.splice(x+1,0,timeArr)
+        this.music[x+1]=this.music[x].filter((item,index)=>index>y)
+        this.music[x]=this.music[x].filter((item,index)=>index<=y)
+        this.moveCursor(x+1,0)
+        this.$nextTick(()=>{this.$refs['note'+(x+1)+'_'+0][0].$el.focus()})
+      }
+
       // b
       if(e.key=='b' || e.key=='B'){
         if(y==0){return}
@@ -343,12 +363,13 @@ body{
 }
 .title:focus-visible{  outline: none;}
 .hied{
-  border:1px solid pink;
+  height: 2vw;
+  /*border:1px solid pink;*/
 }
 .note-cursor{
   width: 100%;
   flex:1 0 auto;
-  border:1px solid greenyellow;
+  /*border:1px solid greenyellow;*/
   display: inline-block;
 }
 .note-cursor:focus-visible{  outline: none;}
