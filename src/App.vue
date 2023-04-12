@@ -12,10 +12,9 @@
                 :ref="'note'+index_x+'_'+index_y"
                 tabindex="-1"
                 @focus.stop="moveCursor(index_x,index_y)"
-                @click.stop.prevent="clickLift($event,index_x,index_y)"
+                @mousedown.stop.prevent="clickLift($event,index_x,index_y)"
                 @keydown.stop="keydown1($event,index_x,index_y)"
           />
-          <!--@mousedown.stop.prevent="clickLift($event,index_x,index_y)"-->
         </div>
       </div>
     </div>
@@ -109,14 +108,22 @@ export default {
   computed:{
     music:{
       get(){
+        let lastLigature=false
         let arr_x=this.music_source.map((item_x,index_x)=>{
+
           let arr=item_x.map((item_y,index_y)=>{
-            let str=JSON.stringify({...item_y,x:index_x,y:index_y})
-            item_y.id=str
+            if(item_y.Ligature=='Ligature_1'){lastLigature=true}
+            else if(item_y.Ligature=='Ligature_3'){lastLigature=false}
+            else if(lastLigature){item_y.Ligature='Ligature_2'}
+            else { item_y.Ligature=null }
+            // 给每个音符加上id
+            item_y.id=JSON.stringify({...item_y,x:index_x,y:index_y})
             return item_y
           })
-          let str=JSON.stringify(arr)
-          item_x.id==str
+
+          // 给每一行加上id
+          item_x.id==JSON.stringify(arr)
+
           // 在每一行头部加上行首的光标容器对象
           if(item_x.length==0 || item_x[0].note!='note_100'){
             item_x.unshift({note:'note_100',length:0})
@@ -149,8 +156,12 @@ export default {
     // 鼠标左键按下
     clickLift(e,x,y){
       let maxlift=parseInt(document.documentElement.clientWidth/304.7)
-      if (y!=0 && e.offsetX<maxlift){ this.moveCursor(x,y-1) }
-      else { this.moveCursor(x,y) }
+      if (y!=0 && e.offsetX<maxlift){
+        this.$nextTick(()=>{this.$refs['note'+x+'_'+(y-1)][0].$el.focus()})
+      }
+      else {
+        this.$nextTick(()=>{this.$refs['note'+x+'_'+(y)][0].$el.focus()})
+      }
 
     },
     // 修改光标位置(获取焦点的元素坐标)
@@ -171,17 +182,17 @@ export default {
       // 数字键0-7
       if(/[0-7]/.test(e.key)){
         let timeObj={note:`note_${parseInt(e.key)}`,height:0,length:4}
-        let Ligature=''
-        if(y!=0){ Ligature=this.music[x][y].Ligature }
-        else if(x!=0){ Ligature=this.music[x-1][this.music[x-1].length-1].Ligature }
-        if(Ligature=='Ligature_1'||Ligature=='Ligature_2'){ timeObj.Ligature='Ligature_2' }
         this.music[x].splice(y+1,0,timeObj)
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
       }
       // 延长音
       if(e.key=='.'){if(y!=0){this.music[x][y].delay=true}}
       // 重复音
-      if(e.key=='-'){this.music[x][y].note='note_9'}
+      if(e.key=='-'){
+        let timeObj={note:`note_9`,height:0,length:4}
+        this.music[x].splice(y+1,0,timeObj)
+        this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
+      }
       // 小结分界线
       if(e.key=='|'){this.music[x][y].note='note_10'}
       // 光标移动到行首
@@ -266,6 +277,7 @@ export default {
       }
       // b
       if(e.key=='b' || e.key=='B'){
+        if(y==0){return}
         if(this.music[x][y].Ligature){
           this.music[x][y].Ligature='Ligature_1'
         }else{
