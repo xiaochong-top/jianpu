@@ -57,7 +57,19 @@ export default {
         // 下划线
         if(this.Tone.length>=8){this.noteSvgArr.push('short_1')}
         if(this.Tone.length>=16){this.noteSvgArr.push('short_2')}
-
+        // 音阶
+        if(this.Tone.height>=1){this.noteSvgArr.push('treble_1')}
+        if(this.Tone.height==2){this.noteSvgArr.push('treble_2')}
+        if(this.Tone.length==16){
+          if(this.Tone.height<=-1){this.noteSvgArr.push('short_2_bass_1')}
+          if(this.Tone.height==-2){this.noteSvgArr.push('short_2_bass_2')}
+        }else if(this.Tone.length==8){
+          if(this.Tone.height<=-1){this.noteSvgArr.push('short_1_bass_1')}
+          if(this.Tone.height==-2){this.noteSvgArr.push('short_1_bass_2')}
+        }else{
+          if(this.Tone.height<=-1){this.noteSvgArr.push('bass_1')}
+          if(this.Tone.height==-2){this.noteSvgArr.push('bass_2')}
+        }
       }
     }
   },

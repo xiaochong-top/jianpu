@@ -93,14 +93,26 @@ export default {
           {  note:'note_5',  height:0,  length:8,Ligature:'Ligature_3'},
         ],
         [
-          {  note:'note_6',  height:0,  length:8,Ligature:'Ligature_1'},
-          {  note:'note_5',  height:0,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_6',  height:2,  length:4,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:1,  length:4,Ligature:'Ligature_3'},
+          {  note:'note_3',  height:0,  length:4,Ligature:'Ligature_1'},
+          {  note:'note_2',  height:-1,  length:4,Ligature:'Ligature_2'},
+          {  note:'note_1',  height:-2,  length:4,Ligature:'Ligature_3'},
+        ],
+        [
+          {  note:'note_6',  height:2,  length:8,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:1,  length:8,Ligature:'Ligature_3'},
           {  note:'note_3',  height:0,  length:8,Ligature:'Ligature_1'},
-          {  note:'note_2',  height:0,  length:16,Ligature:'Ligature_2'},
-          {  note:'note_1',  height:0,  length:16,Ligature:'Ligature_3'},
-          {  note:'note_2',  height:0,  length:4,Ligature:'Ligature_2'},
-          {  note:'note_9',  height:0,  length:4},
-        ]
+          {  note:'note_2',  height:-1,  length:8,Ligature:'Ligature_2'},
+          {  note:'note_1',  height:-2,  length:8,Ligature:'Ligature_3'},
+        ],
+        [
+          {  note:'note_6',  height:2,  length:16,Ligature:'Ligature_1'},
+          {  note:'note_5',  height:1,  length:16,Ligature:'Ligature_3'},
+          {  note:'note_3',  height:0,  length:16,Ligature:'Ligature_1'},
+          {  note:'note_2',  height:-1,  length:16,Ligature:'Ligature_2'},
+          {  note:'note_1',  height:-2,  length:16,Ligature:'Ligature_3'},
+        ],
       ],
       // 标识当前获取焦点的音符坐标
       focus:{x:null,y:null}
