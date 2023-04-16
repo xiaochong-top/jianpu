@@ -1,7 +1,22 @@
 <template>
   <div id="rightBox">
     <div class="danglond" />
-    <div class="pringf" />
+    <div class="pringf" /><br/>
+    <span>按 “↑”，“↓”，“←”，“→” 键 移动光标</span><br/>
+    <span>按 “Home” 键，光标移动到行首</span><br/>
+    <span>按 “end” 键，光标移动到行尾</span><br/>
+    <span>按 “Enter(↲)” 键，回车换行</span><br/>
+    <span>按 “0-7” 键，光标位置插入对应音符</span><br/>
+    <span>按 “.” 键，给音符添加附点，延长前面音符一半，再按一次取消</span><br/>
+    <span>按 “_” 键，给音符添加减时线，目前最短支持十六分音符，再按一次回到四分音符</span><br/>
+    <span>按 "-" 键，光标位置插入增时线</span><br/>
+    <span>按 “|” 键，光标位置插入小结分界线</span><br/>
+    <span>按 "Backspace" 键，删除光标前一位音符</span><br/>
+    <span>按 “Del” 键,删除光标后一位音符</span><br/>
+    <span>按 “b” 键，添加从当前音符开始的连音线</span><br/>
+    <span>按 “e” 键，将连音线终止到当前音符</span><br/>
+    <span>按 “u” 键，给当前音符添加高音点</span><br/>
+    <apan>按 “d” 键，给当前音符添加低音点</apan>
   </div>
 </template>
 

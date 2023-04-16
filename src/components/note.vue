@@ -15,7 +15,7 @@
 export default {
   name: 'ShowNote',
   // note:note_0-8 哆、唻、咪、发、嗖、拉、西，
-  // 8延长一半(延长点)，9延长线，10小结分界线，100换行
+  // 8延长一半(附点)，9延长线，10小结分界线，100换行
   // height:-2,-1,0,1,2 高低音
   // length: 16.5,16, 8.5, 8, 4.5, 4 长短音
   // lianyinxian:0,1,2,3 连音符
@@ -48,9 +48,9 @@ export default {
       immediate: true,
       handler(){
         this.noteSvgArr=[]
-        // 音符
+        // 音符,包括增时线(note_9)和小结分界线(note_10)
         this.noteSvgArr.push(this.Tone.note)
-        // 延长音
+        // 附点
         if(this.Tone.delay){this.noteSvgArr.push('note_8')}
         // 连音线
         this.noteSvgArr.push(this.Tone.Ligature)
@@ -131,7 +131,7 @@ export default {
   width: 100%;
   height:100%;
 }
-/*音符,8是延长音*/
+/*音符,8是附点，9是增时线，10是小结分界线*/
 .note_0{background:url("@/assets/notesvg/note_0.svg");}
 .note_1{background:url("@/assets/notesvg/note_1.svg");}
 .note_2{background:url("@/assets/notesvg/note_2.svg");}

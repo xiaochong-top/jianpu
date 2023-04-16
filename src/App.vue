@@ -121,12 +121,13 @@ export default {
   computed:{
     music:{
       get(){
+        // 提供给下一个音符判断自己是否在连音线下
         let lastLigature=false
         let arr_x=this.music_source.map((item_x,index_x)=>{
 
           let arr=item_x.map((item_y,index_y)=>{
             if(item_y.Ligature=='Ligature_1'){lastLigature=true}
-            else if(item_y.Ligature=='Ligature_3'){lastLigature=false}
+            else if(item_y.Ligature=='Ligature_3' && lastLigature==true){lastLigature=false}
             else if(lastLigature){item_y.Ligature='Ligature_2'}
             else { item_y.Ligature=null }
             // 给每个音符加上id
@@ -212,13 +213,10 @@ export default {
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
       }
       // 小结分界线
-      if(e.key=='|'){this.music[x][y].note='note_10'}
-
-      // 延长音点
-      if(e.key=='.'){if(y!=0){this.music[x][y].delay=!this.music[x][y].delay}}
-      // 下划线
-      if(e.key=='_'){
-        if(y!=0){this.music[x][y].length=this.music[x][y].length==16?4:this.music[x][y].length*2}
+      if(e.key=='|'){
+        let timeObj={note:`note_10`,height:0,length:4}
+        this.music[x].splice(y+1,0,timeObj)
+        this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
       }
 
       ////////////////
@@ -295,6 +293,7 @@ export default {
           timeArr.shift()
           this.music[x].push(...timeArr)
           this.music.splice(x+1,1)
+          this.music = [...this.music]
         }
       }
       // 回车
@@ -307,27 +306,61 @@ export default {
         this.$nextTick(()=>{this.$refs['note'+(x+1)+'_'+0][0].$el.focus()})
       }
 
-      // b
+
+      ////////////////
+      // 修改当前音符的操作
+      ////////////////
+      // 附点
+      if(e.key=='.'){if(y!=0){
+        this.music[x][y].delay=!this.music[x][y].delay}
+        this.music = [...this.music]
+      }
+      // 下划线
+      if(e.key=='_'){
+        if(y!=0){
+          this.music[x][y].length=this.music[x][y].length==16?4:this.music[x][y].length*2
+          this.music = [...this.music]
+        }
+      }
+      // 提高音阶
+      if(e.key=='u' || e.key=='U'){
+        this.music[x][y].height+=1
+        if(this.music[x][y].height==3){this.music[x][y].height=-2}
+        this.music = [...this.music]
+      }
+      // 降低音阶
+      if(e.key=='d' || e.key=='D'){
+        this.music[x][y].height-=1
+        if(this.music[x][y].height==-3){this.music[x][y].height=2}
+        this.music = [...this.music]
+      }
+      // 开始连音线
       if(e.key=='b' || e.key=='B'){
+        // 如果是行首{光标占位}不能启用连音线
         if(y==0){return}
+        // 如果不是音符(小结分界线，增时线)，不能启用连音线
+        if(!/note_[1-7]$/.test(this.music[x][y].note)){return}
         if(this.music[x][y].Ligature){
-          this.music[x][y].Ligature='Ligature_1'
+          // 如果本身就是连音线开头或中间，则不改变
+          if(['Ligature_1','Ligature_2'].includes(this.music[x][y].Ligature))return;
+          // 如果是上一个连音线的结尾，则将其改为中间继续往后延续
+          else if(this.music[x][y].Ligature=='Ligature_3'){this.music[x][y].Ligature='Ligature_2'}
+          // 如果之前没有连音线，才设置为连音线开头
+          else {this.music[x][y].Ligature='Ligature_1'}
         }else{
           Reflect.set(this.music[x][y],"Ligature",'Ligature_1')
         }
+        this.music = [...this.music]
       }
-      // e
+      // 结束连音线
       if(e.key=='e' || e.key=='E'){
-        this.music[x][y].Ligature='Ligature_3'
+        if(this.music[x][y].Ligature && ['Ligature_2','Ligature_1'].includes(this.music[x][y].Ligature)){
+          this.music[x][y].Ligature='Ligature_3'
+        }
+        this.music = [...this.music]
       }
 
-      if(e.key=='u' || e.key=='U'){
-        console.log('您按下了：S+Backspace')
-      }
-      // S+下---d
-      if(e.key=='d' || e.key=='D'){
-        console.log('您按下了：S+Backspace')
-      }
+
       // S+左--s
       if(e.key=='s' || e.key=='S'){
         console.log('您按下了：S+Backspace')
