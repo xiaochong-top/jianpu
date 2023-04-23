@@ -2,21 +2,24 @@
   <div id="rightBox">
     <div class="danglond" />
     <div class="pringf" /><br/>
-    <span>按 “↑”，“↓”，“←”，“→” 键 移动光标</span><br/>
-    <span>按 “Home” 键，光标移动到行首</span><br/>
-    <span>按 “end” 键，光标移动到行尾</span><br/>
-    <span>按 “Enter(↲)” 键，回车换行</span><br/>
-    <span>按 “0-7” 键，光标位置插入对应音符</span><br/>
-    <span>按 “.” 键，给音符添加附点，延长前面音符一半，再按一次取消</span><br/>
-    <span>按 “_” 键，给音符添加减时线，目前最短支持十六分音符，再按一次回到四分音符</span><br/>
+    <span>按 "↑"，"↓"，"←"，"→" 键 移动光标</span><br/>
+    <span>按 "Home" 键，光标移动到行首</span><br/>
+    <span>按 "end" 键，光标移动到行尾</span><br/>
+    <span>按 "Enter(↲)" 键，回车换行</span><br/>
+    <span>按 "0-7" 键，光标位置插入对应音符</span><br/>
+    <span>按 "." 键，给音符添加附点，延长前面音符一半，再按一次取消</span><br/>
+    <span>按 "_" 键，给音符添加减时线，目前最短支持十六分音符，再按一次回到四分音符</span><br/>
     <span>按 "-" 键，光标位置插入增时线</span><br/>
-    <span>按 “|” 键，光标位置插入小结分界线</span><br/>
+    <span>按 "|" 键，光标位置插入小结分界线</span><br/>
     <span>按 "Backspace" 键，删除光标前一位音符</span><br/>
-    <span>按 “Del” 键,删除光标后一位音符</span><br/>
-    <span>按 “b” 键，添加从当前音符开始的连音线</span><br/>
-    <span>按 “e” 键，将连音线终止到当前音符</span><br/>
-    <span>按 “u” 键，给当前音符添加高音点</span><br/>
-    <apan>按 “d” 键，给当前音符添加低音点</apan>
+    <span>按 "Del" 键,删除光标后一位音符</span><br/>
+    <span>按 "b" 键(begin)，添加从当前音符开始的连音线</span><br/>
+    <span>按 "e" 键(end)，将连音线终止到当前音符</span><br/>
+    <span>按 "u" 键(up)，给当前音符添加高音点</span><br/>
+    <span>按 "d" 键(down)，给当前音符添加低音点</span><br/>
+    <span>按 "f"+"0-7" 键(front)，给当前音符添加前依音,0为删除</span><br/>
+    <span>按 "a"+"0-7" 键(after)，给当前音符添加后依音,0为删除</span>
+
   </div>
 </template>
 
@@ -37,6 +40,8 @@
   /*border:1px solid red;*/
 }
 .danglond{
+  display: inline-block;
+  margin:0.5vw;
   height: 250px;
   width: 250px;
   border-radius: 100%;
@@ -49,6 +54,8 @@
 }
 
 .pringf{
+  display: inline-block;
+  margin:0.5vw;
   height: 250px;
   width: 250px;
   border-radius: 100%;

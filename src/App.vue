@@ -15,7 +15,10 @@
                 tabindex="-1"
                 @focus.stop="moveCursor(index_x,index_y)"
                 @mousedown.stop.prevent="clickLift($event,index_x,index_y)"
-                @keydown.stop="keydown1($event,index_x,index_y)"
+                @keydown.stop="keydownFun($event,index_x,index_y)"
+                @keyup.stop="keyupFun($event,index_x,index_y)"
+                @insertFrontDecorateFun="insertFrontDecorateFun($event,index_x,index_y)"
+                @insertAfterDecorateFun="insertAfterDecorateFun($event,index_x,index_y)"
           />
         </div>
       </div>
@@ -39,6 +42,12 @@ export default {
     return{
       // 题目
       title:'',
+      // 标识当前获取焦点的音符坐标
+      focus:{x:null,y:null},
+      // 后依音编辑状态
+      editAfter:false,
+      // 前依音编辑状态
+      editFront:false,
       // 简谱数据
       music_source:[
           [
@@ -113,9 +122,7 @@ export default {
           {  note:'note_2',  height:-1,  length:16,Ligature:'Ligature_2'},
           {  note:'note_1',  height:-2,  length:16,Ligature:'Ligature_3'},
         ],
-      ],
-      // 标识当前获取焦点的音符坐标
-      focus:{x:null,y:null}
+      ]
     }
   },
   computed:{
@@ -169,6 +176,7 @@ export default {
     },
     // 鼠标左键按下
     clickLift(e,x,y){
+      console.log('+++++++++++++++++++++?????????????????')
       let maxlift=parseInt(document.documentElement.clientWidth/304.7)
       if (y!=0 && e.offsetX<maxlift){
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y-1)][0].$el.focus()})
@@ -192,7 +200,7 @@ export default {
       this.music[x][y].showCursor=true
     },
     // input 事件无法阻止默认行为，用键盘事件模拟
-    keydown1(e,x,y){
+    keydownFun(e,x,y){
 
       // console.log(e)
 
@@ -200,8 +208,8 @@ export default {
       // 加入新组件的操作
       ////////////////
 
-      // 数字键0-7
-      if(/[0-7]/.test(e.key)){
+      // 音符0-7
+      if(/[0-7]/.test(e.key) && this.editAfter==false && this.editFront==false){
         let timeObj={note:`note_${parseInt(e.key)}`,height:0,length:4}
         this.music[x].splice(y+1,0,timeObj)
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y+1)][0].$el.focus()})
@@ -359,17 +367,51 @@ export default {
         }
         this.music = [...this.music]
       }
-
-
-      // S+左--s
-      if(e.key=='s' || e.key=='S'){
-        console.log('您按下了：S+Backspace')
+      // 开启依音编辑状态
+      if (e.key == 'a') {
+        this.editAfter=true
+      } else if (e.key == 'f') {
+        this.editFront=true
       }
-      // S+右--l
-      if(e.key=='l' || e.key=='L'){
-        console.log('您按下了：S+Backspace')
+      // 输入前后依音
+      if(/[0-7]/.test(e.key) && this.editAfter==true && this.editFront==false){
+        this.music[x][y].after=e.key
+        this.music = [...this.music]
+      }else if(/[0-7]/.test(e.key) && this.editAfter==false && this.editFront==true){
+        this.music[x][y].front=e.key
+        this.music = [...this.music]
       }
-    }
+
+    },
+    keyupFun(e) {
+      // 关闭依音编辑状态
+      if (e.key == 'a') {
+        this.editAfter=false
+      } else if (e.key == 'f') {
+        this.editFront=false
+      }
+      // if (e.key=='p'){
+      //   this.insertFun()
+      // }
+    },
+    // 展示后一个音符的前依音
+    insertFrontDecorateFun(e,x,y){
+      console.log(e,x,y)
+      // 判断这个音符前是不是小结分界线，如果是就给该分界线添加宽依音属性，如果不是就插入窄依音
+      if(this.music[x][y-1].note=="note_10"){
+        this.music[x][y-1].showFront=e
+      }
+    },
+    // 展示前一个音符的后依音
+    insertAfterDecorateFun(e,x,y){
+      console.log(e,x,y)
+      // 判断这个音符后是不是小结分界线，如果是就给该分界线添加宽依音属性，如果不是就插入窄依音
+      if(this.music[x][y+1] && this.music[x][y+1].note=="note_10"){
+        console.log('???')
+        console.log(e)
+        this.music[x][y+1].showAfter=e
+      }
+    },
   }
 }
 </script>
