@@ -17,8 +17,6 @@
                 @mousedown.stop.prevent="clickLift($event,index_x,index_y)"
                 @keydown.stop="keydownFun($event,index_x,index_y)"
                 @keyup.stop="keyupFun($event,index_x,index_y)"
-                @insertFrontDecorateFun="insertFrontDecorateFun($event,index_x,index_y)"
-                @insertAfterDecorateFun="insertAfterDecorateFun($event,index_x,index_y)"
           />
         </div>
       </div>
@@ -390,28 +388,7 @@ export default {
       } else if (e.key == 'f') {
         this.editFront=false
       }
-      // if (e.key=='p'){
-      //   this.insertFun()
-      // }
-    },
-    // 展示后一个音符的前依音
-    insertFrontDecorateFun(e,x,y){
-      console.log(e,x,y)
-      // 判断这个音符前是不是小结分界线，如果是就给该分界线添加宽依音属性，如果不是就插入窄依音
-      if(this.music[x][y-1].note=="note_10"){
-        this.music[x][y-1].showFront=e
-      }
-    },
-    // 展示前一个音符的后依音
-    insertAfterDecorateFun(e,x,y){
-      console.log(e,x,y)
-      // 判断这个音符后是不是小结分界线，如果是就给该分界线添加宽依音属性，如果不是就插入窄依音
-      if(this.music[x][y+1] && this.music[x][y+1].note=="note_10"){
-        console.log('???')
-        console.log(e)
-        this.music[x][y+1].showAfter=e
-      }
-    },
+    }
   }
 }
 </script>

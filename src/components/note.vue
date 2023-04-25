@@ -2,15 +2,20 @@
     <div v-if="Tone.note=='note_100'" class="note_Cursor">
       <div v-if="showCursor==true" class="layout_right_Cursor"/>
     </div>
-    <div v-else-if="Tone.note=='note_50'" class="decorate_Cursor">
-      <div v-for="(item,index) in noteSvgArr" :key="index">
-        <div class="notebackground"   :class="item"/>
-      </div>
-    </div>
-    <div v-else class="note">
+    <div v-else class="note" :class="noteContainerClassFun()">
+      <!--光标-->
       <div v-if="showCursor==true" class="layout_right_Cursor"/>
+      <!--前依音-->
+      <div v-for="(item,index) in noteFrontSvgArr" :key="index">
+        <div class="frontBackground"   :class="item"/>
+      </div>
+      <!--音符-->
       <div v-for="(item,index) in noteSvgArr" :key="index">
-        <div class="notebackground"   :class="item"/>
+        <div :class="noteClassFun()+' '+item"/>
+      </div>
+      <!--后依音-->
+      <div v-for="(item,index) in noteAfterSvgArr" :key="index">
+        <div class="afterBackground"   :class="item"/>
       </div>
     </div>
 </template>
@@ -32,7 +37,12 @@ export default {
       number:"number",
       // 标识光标亮与暗
       showCursor:false,
-      noteSvgArr:[]
+      // 前依音图组
+      noteFrontSvgArr:[],
+      // 音符本符
+      noteSvgArr:[],
+      // 后依音图组
+      noteAfterSvgArr:[]
     }
   },
   watch:{
@@ -53,6 +63,8 @@ export default {
       immediate: true,
       handler(){
         this.noteSvgArr=[]
+        this.noteFrontSvgArr=[]
+        this.noteAfterSvgArr=[]
         // 音符,包括增时线(note_9)和小结分界线(note_10)
         this.noteSvgArr.push(this.Tone.note)
         // 附点
@@ -75,35 +87,21 @@ export default {
           if(this.Tone.height<=-1){this.noteSvgArr.push('bass_1')}
           if(this.Tone.height==-2){this.noteSvgArr.push('bass_2')}
         }
-        // 前依音连接线,并触发前依音事件让父组件处理数据，展示依音
+        // 前依音相关显示
         if(this.Tone.front && this.Tone.front!=0){
           this.noteSvgArr.push('connection_front')
-          this.$emit('insertFrontDecorateFun',this.Tone.front)
+          this.noteFrontSvgArr.push('decorate_front_narrow')
+          if(['Ligature_2','Ligature_3'].includes(this.Tone.Ligature)) this.noteFrontSvgArr.push('Ligature_decorate')
+          if(this.Tone.length>=8) this.noteFrontSvgArr.push('short_1_decorate')
+          if(this.Tone.length>=16) this.noteFrontSvgArr.push('short_2_decorate')
         }
-        // 后依音连结线,并触发后依音事件让父组件处理数据，展示依音
+        // 后依音相关显示
         if(this.Tone.after && this.Tone.after!=0){
           this.noteSvgArr.push('connection_after')
-          this.$emit('insertAfterDecorateFun',this.Tone.after)
-        }
-        // 帮后一个组件展示的前依音
-        if(this.Tone.showFront && this.Tone.note=="note_50"){
-          this.noteSvgArr.push('decorate_front_narrow')
-          this.noteSvgArr.push('decorate_narrow_note_'+this.Tone.showFront)
-        }
-        // 帮前一个组件展示的后依音
-        if(this.Tone.showAfter && this.Tone.note=="note_50"){
-          this.noteSvgArr.push('decorate_after_narrow')
-          this.noteSvgArr.push('decorate_narrow_note_'+this.Tone.showAfter)
-        }
-        // 帮后一个组件展示的前依音
-        if(this.Tone.showFront && this.Tone.note!="note_50"){
-          this.noteSvgArr.push('decorate_front_wide')
-          this.noteSvgArr.push('decorate_front_wide_note_'+this.Tone.showFront)
-        }
-        // 帮前一个组件展示的后依音
-        if(this.Tone.showAfter && this.Tone.note!="note_50"){
-          this.noteSvgArr.push('decorate_after_wide')
-          this.noteSvgArr.push('decorate_after_wide_note_'+this.Tone.showAfter)
+          this.noteAfterSvgArr.push('decorate_after_narrow')
+          if(['Ligature_1','Ligature_2'].includes(this.Tone.Ligature)) this.noteAfterSvgArr.push('Ligature_decorate')
+          if(this.Tone.length>=8) this.noteAfterSvgArr.push('short_1_decorate')
+          if(this.Tone.length>=16) this.noteAfterSvgArr.push('short_2_decorate')
         }
       }
     }
@@ -126,6 +124,17 @@ export default {
     // 本音符停止闪烁光标
     endShowCursor(){
       clearInterval(this.CursorTime)
+    },
+    // 音符容器类宽
+    noteContainerClassFun(){
+      if((this.Tone.front && this.Tone.front!=0)&&(this.Tone.after && this.Tone.after!=0)) return "note_w6"
+      if((this.Tone.front && this.Tone.front!=0)||(this.Tone.after && this.Tone.after!=0)) return "note_w45"
+      return "note_w3"
+    },
+    // 音符定位类
+    noteClassFun(){
+      if(this.Tone.front && this.Tone.front!=0)return 'notebackground_front'
+      return 'notebackground'
     }
   }
 }
@@ -138,7 +147,15 @@ export default {
   display: inline-block;
   position: relative;
   height:3VW ;
+}
+.note_w3{
   width:1.5VW;
+}
+.note_w45{
+  width:2.25VW;
+}
+.note_w6{
+  width:3VW;
 }
 /*换行光标容器*/
 .note_Cursor{
@@ -168,12 +185,33 @@ export default {
   /*z-index: 999999999999;*/
   border-right: 1px solid black;
 }
-/*所有音符的统一样式*/
+/*没有前依音的音符定位*/
 .notebackground{
   position: absolute;
-  width: 100%;
+  width: 1.5vw;
   height:100%;
 }
+/*有前依音的音符定位*/
+.notebackground_front{
+  position: absolute;
+  left: 0.75vw;
+  width: 1.5vw;
+  height:100%;
+}
+/*前依音统一样式*/
+.frontBackground{
+  position: absolute;
+  width: 0.75vw;
+  height:100%;
+}
+/*后依音统一定位*/
+.afterBackground{
+  position: absolute;
+  right: 0;
+  width: 0.75vw;
+  height:100%;
+}
+
 /*音符,8是附点，9是增时线，10是小结分界线*/
 .note_0{background:url("@/assets/notesvg/note_0.svg");}
 .note_1{background:url("@/assets/notesvg/note_1.svg");}
@@ -198,7 +236,7 @@ export default {
 .Ligature_1{background: url("@/assets/notesvg/Ligature_1.svg");}
 .Ligature_2{background: url("@/assets/notesvg/Ligature_2.svg");}
 .Ligature_3{background: url("@/assets/notesvg/Ligature_3.svg");}
-/*下划线*/
+/*减时线*/
 .short_1{background:url("@/assets/notesvg/short_1.svg");}
 .short_2{background:url("@/assets/notesvg/short_2.svg");}
 /*高音标记*/
@@ -208,15 +246,16 @@ export default {
 .connection_front{background:url("@/assets/notesvg/connection_front.svg")}
 /*后依音连接线*/
 .connection_after{background:url("@/assets/notesvg/connection_after.svg")}
-/*前依音窄托*/
+/*前依音托*/
 .decorate_front_narrow{background:url("@/assets/notesvg/decorate_front_narrow.svg")}
-/*后依音窄托*/
+/*后依音托*/
 .decorate_after_narrow{background:url("@/assets/notesvg/decorate_after_narrow.svg")}
-/*前依音宽托*/
-.decorate_front_wide{background:url("@/assets/notesvg/decorate_front_wide.svg")}
-/*后依音宽托*/
-.decorate_after_wide{background:url("@/assets/notesvg/decorate_after_wide.svg")}
-/*窄字符依音音符*/
+/*依音连音线*/
+.Ligature_decorate{background: url("@/assets/notesvg/Ligature_decorate.svg");}
+/*依音减时线*/
+.short_1_decorate{background: url("@/assets/notesvg/short_1_decorate.svg");}
+.short_2_decorate{background: url("@/assets/notesvg/short_2_decorate.svg");}
+/*依音音符*/
 .decorate_narrow_note_1{background:url("@/assets/notesvg/decorate_narrow_note_1.svg")}
 .decorate_narrow_note_2{background:url("@/assets/notesvg/decorate_narrow_note_2.svg")}
 .decorate_narrow_note_3{background:url("@/assets/notesvg/decorate_narrow_note_3.svg")}
@@ -224,21 +263,5 @@ export default {
 .decorate_narrow_note_5{background:url("@/assets/notesvg/decorate_narrow_note_5.svg")}
 .decorate_narrow_note_6{background:url("@/assets/notesvg/decorate_narrow_note_6.svg")}
 .decorate_narrow_note_7{background:url("@/assets/notesvg/decorate_narrow_note_7.svg")}
-/*宽字符前依音音符*/
-.decorate_front_wide_note_1{background:url("@/assets/notesvg/decorate_front_wide_note_1.svg")}
-.decorate_front_wide_note_2{background:url("@/assets/notesvg/decorate_front_wide_note_2.svg")}
-.decorate_front_wide_note_3{background:url("@/assets/notesvg/decorate_front_wide_note_3.svg")}
-.decorate_front_wide_note_4{background:url("@/assets/notesvg/decorate_front_wide_note_4.svg")}
-.decorate_front_wide_note_5{background:url("@/assets/notesvg/decorate_front_wide_note_5.svg")}
-.decorate_front_wide_note_6{background:url("@/assets/notesvg/decorate_front_wide_note_6.svg")}
-.decorate_front_wide_note_7{background:url("@/assets/notesvg/decorate_front_wide_note_7.svg")}
-/*宽字符后依音音符*/
-.decorate_after_wide_note_1{background:url("@/assets/notesvg/decorate_after_wide_note_1.svg")}
-.decorate_after_wide_note_2{background:url("@/assets/notesvg/decorate_after_wide_note_2.svg")}
-.decorate_after_wide_note_3{background:url("@/assets/notesvg/decorate_after_wide_note_3.svg")}
-.decorate_after_wide_note_4{background:url("@/assets/notesvg/decorate_after_wide_note_4.svg")}
-.decorate_after_wide_note_5{background:url("@/assets/notesvg/decorate_after_wide_note_5.svg")}
-.decorate_after_wide_note_6{background:url("@/assets/notesvg/decorate_after_wide_note_6.svg")}
-.decorate_after_wide_note_7{background:url("@/assets/notesvg/decorate_after_wide_note_7.svg")}
 </style>
 
