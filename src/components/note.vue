@@ -90,6 +90,7 @@ export default {
         // 前依音相关显示
         if(this.Tone.front && this.Tone.front!=0){
           this.noteSvgArr.push('connection_front')
+          this.noteFrontSvgArr.push('decorate_narrow_note_'+this.Tone.front)
           this.noteFrontSvgArr.push('decorate_front_narrow')
           if(['Ligature_2','Ligature_3'].includes(this.Tone.Ligature)) this.noteFrontSvgArr.push('Ligature_decorate')
           if(this.Tone.length>=8) this.noteFrontSvgArr.push('short_1_decorate')
@@ -98,6 +99,7 @@ export default {
         // 后依音相关显示
         if(this.Tone.after && this.Tone.after!=0){
           this.noteSvgArr.push('connection_after')
+          this.noteAfterSvgArr.push('decorate_narrow_note_'+this.Tone.after)
           this.noteAfterSvgArr.push('decorate_after_narrow')
           if(['Ligature_1','Ligature_2'].includes(this.Tone.Ligature)) this.noteAfterSvgArr.push('Ligature_decorate')
           if(this.Tone.length>=8) this.noteAfterSvgArr.push('short_1_decorate')
@@ -127,9 +129,9 @@ export default {
     },
     // 音符容器类宽
     noteContainerClassFun(){
-      if((this.Tone.front && this.Tone.front!=0)&&(this.Tone.after && this.Tone.after!=0)) return "note_w6"
-      if((this.Tone.front && this.Tone.front!=0)||(this.Tone.after && this.Tone.after!=0)) return "note_w45"
-      return "note_w3"
+      if((this.Tone.front && this.Tone.front!=0)&&(this.Tone.after && this.Tone.after!=0)) return "note_w25"
+      if((this.Tone.front && this.Tone.front!=0)||(this.Tone.after && this.Tone.after!=0)) return "note_w20"
+      return "note_w15"
     },
     // 音符定位类
     noteClassFun(){
@@ -148,14 +150,14 @@ export default {
   position: relative;
   height:3VW ;
 }
-.note_w3{
+.note_w15{
   width:1.5VW;
 }
-.note_w45{
-  width:2.25VW;
+.note_w20{
+  width:2VW;
 }
-.note_w6{
-  width:3VW;
+.note_w25{
+  width:2.5VW;
 }
 /*换行光标容器*/
 .note_Cursor{
@@ -194,21 +196,21 @@ export default {
 /*有前依音的音符定位*/
 .notebackground_front{
   position: absolute;
-  left: 0.75vw;
+  left: 0.5vw;
   width: 1.5vw;
   height:100%;
 }
 /*前依音统一样式*/
 .frontBackground{
   position: absolute;
-  width: 0.75vw;
+  width: 0.5vw;
   height:100%;
 }
 /*后依音统一定位*/
 .afterBackground{
   position: absolute;
   right: 0;
-  width: 0.75vw;
+  width: 0.5vw;
   height:100%;
 }
 

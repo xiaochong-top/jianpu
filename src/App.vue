@@ -174,7 +174,6 @@ export default {
     },
     // 鼠标左键按下
     clickLift(e,x,y){
-      console.log('+++++++++++++++++++++?????????????????')
       let maxlift=parseInt(document.documentElement.clientWidth/304.7)
       if (y!=0 && e.offsetX<maxlift){
         this.$nextTick(()=>{this.$refs['note'+x+'_'+(y-1)][0].$el.focus()})
